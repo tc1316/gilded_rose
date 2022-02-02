@@ -6,15 +6,14 @@ from typing import List
 class GildedRose:
     items: List = field(default_factory=list)
     # special_items = ["Aged Brie", "Sulfuras, Hand of Ragnaros", "Backstage passes", "Conjured"]
-    
-    
+
     def update_quality(self):
         for item in self.items:
             # Base case
             item.sell_in -= 1
             delta_quality = -1
             max_quality = 50
-            
+
             # Sulfuras case
             if item.name.title() == "Sulfuras, Hand Of Ragnaros":
                 item.sell_in += 1
@@ -36,19 +35,16 @@ class GildedRose:
                 elif item.sell_in < 0:
                     item.quality = 0
                     continue
-                    
 
             if item.quality >= 0:
                 if item.sell_in < 0:
-                    item.quality += delta_quality*2
+                    item.quality += delta_quality * 2
                 else:
                     item.quality += delta_quality
                 if item.quality < 0:
                     item.quality = 0
 
             item.quality = min(max_quality, item.quality)
-            
-
 
             # if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
             #     if item.quality > 0:
@@ -77,10 +73,11 @@ class GildedRose:
             #     else:
             #         if item.quality < 50:
             #             item.quality = item.quality + 1
-    
+
     def update_quality_n_times(self, num):
         for _ in range(num):
             self.update_quality()
+
 
 class Item:
     def __init__(self, name, sell_in, quality):
@@ -90,4 +87,3 @@ class Item:
 
     def __repr__(self):
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
-

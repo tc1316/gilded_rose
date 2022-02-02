@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import unittest
-
 from gilded_rose import Item, GildedRose
 
 
@@ -27,6 +26,7 @@ class GildedRoseTest(unittest.TestCase):
 
     def test_quality_degradation_is_never_negative(self):
         self.gilded_rose.update_quality_n_times(1000)
+        self.assertEqual(self.gilded_rose.items[0].sell_in, -995)
         self.assertEqual(self.gilded_rose.items[0].quality, 0)
 
     def test_quality_increases_for_aged_brie(self):
