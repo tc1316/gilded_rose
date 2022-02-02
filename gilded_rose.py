@@ -27,11 +27,11 @@ class GildedRose:
 
             # Backstage pass case
             elif "Backstage passes" in item.name:
-                if item.sell_in > 10:
+                if item.sell_in >= 10:
                     delta_quality = 1
-                if 6 <= item.sell_in <= 10:
+                if 5 <= item.sell_in <= 9:
                     delta_quality = 2
-                elif 0 <= item.sell_in <= 5:
+                elif 0 <= item.sell_in <= 4:
                     delta_quality = 3
                 elif item.sell_in < 0:
                     item.quality = 0
