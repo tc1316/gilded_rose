@@ -9,7 +9,7 @@ class GildedRoseTest(unittest.TestCase):
         aged_brie = Item("Aged Brie", 5, 0)
         sulfuras = Item("Sulfuras, Hand of Ragnaros", -500, 80)
         bsp = Item("Backstage passes to a TAFKAL80ETC concert", 15, 0)
-        conjured_foo_item = Item("Conjured foo", 5, 10)
+        conjured_foo_item = Item("Conjured foo", 5, 50)
 
         self.items = [foo_item, aged_brie, sulfuras, bsp, conjured_foo_item]
         self.gilded_rose = GildedRose(self.items)
@@ -69,9 +69,15 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(self.gilded_rose.items[3].quality, 0)
 
     def test_conjured_items(self):
-        # Write tests for conjured normal items/aged brie/backstage passes
-        pass
-
+        self.gilded_rose.update_quality_n_times(5)
+        self.assertEqual(self.gilded_rose.items[4].sell_in, 0)
+        self.assertEqual(self.gilded_rose.items[4].quality, 40)
+    
+        # Quality degradation past expiry should be 4 per day for conjured items
+        self.gilded_rose.update_quality_n_times(5)
+        self.assertEqual(self.gilded_rose.items[4].sell_in, -5)
+        self.assertEqual(self.gilded_rose.items[4].quality, 20)
+    
 
 if __name__ == '__main__':
     unittest.main()
