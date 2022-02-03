@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
 import unittest
-from gilded_rose import Item, GildedRose
+from gilded_rose import GildedRose
+from unittest.mock import Mock
 
 
 class GildedRoseTest(unittest.TestCase):
     def setUp(self):
-        foo_item = Item("foo", 5, 10)
-        aged_brie = Item("Aged Brie", 5, 0)
-        sulfuras = Item("Sulfuras - Hand of Ragnaros", -500, 50)
-        bsp = Item("Backstage passes to a TAFKAL80ETC concert", 15, 0)
-        conjured_foo_item = Item("Conjured foo", 5, 50)
+        apple, aged_brie, sulfuras, backstage_pass, conjured_apple = Mock(), Mock(), Mock(), Mock(), Mock()
 
-        self.items = [foo_item, aged_brie, sulfuras, bsp, conjured_foo_item]
+        apple.configure_mock(name="Apple", sell_in=5, quality=10)
+        aged_brie.configure_mock(name="aged brie", sell_in=5, quality=0)
+        sulfuras.configure_mock(
+            name="sulfuras - hand of ragnaros", sell_in=-500, quality=50)
+        backstage_pass.configure_mock(
+            name="backstage passes to a smash mouth concert", sell_in=15, quality=0)
+        conjured_apple.configure_mock(
+            name="conjured apple", sell_in=5, quality=50)
+
+        self.items = [apple, aged_brie, sulfuras,
+                      backstage_pass, conjured_apple]
         self.gilded_rose = GildedRose(self.items)
 
     def test_quality_degradation_base_case(self):
