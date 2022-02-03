@@ -8,12 +8,12 @@ class GildedRose:
     parsed_items: List = field(default_factory=list, init=False)
 
     def __post_init__(self):
+        special_items = {"Aged Brie": AgedBrie, "Sulfuras - Hand Of Ragnaros": Sulfuras,
+                         "Backstage Passes To": BackstagePass, "Conjured": ConjuredItem}
+
         for item in self.items:
             item.name = item.name.title()
             args = [item.name, item.sell_in, item.quality]
-
-            special_items = {"Aged Brie": AgedBrie, "Sulfuras - Hand Of Ragnaros": Sulfuras,
-                             "Backstage Passes To": BackstagePass, "Conjured": ConjuredItem}
 
             special = False
             for k, class_name in special_items.items():
@@ -62,22 +62,22 @@ class Item:
 
 
 class RegularItem(Item):
-    def update_quality_conditions(self) -> list:
+    def update_quality_conditions(self) -> dict:
         return {"delta_quality": -1, "delta_sell_in": -1}
 
 
 class AgedBrie(Item):
-    def update_quality_conditions(self) -> list:
+    def update_quality_conditions(self) -> dict:
         return {"delta_quality": 1, "delta_sell_in": -1}
 
 
 class Sulfuras(Item):
-    def update_quality_conditions(self) -> list:
+    def update_quality_conditions(self) -> dict:
         return {"delta_quality": 0, "delta_sell_in": 0}
 
 
 class BackstagePass(Item):
-    def update_quality_conditions(self) -> list:
+    def update_quality_conditions(self) -> dict:
         if self.sell_in > 10:
             delta_quality = 1
         elif 5 < self.sell_in <= 10:
@@ -92,5 +92,5 @@ class BackstagePass(Item):
 
 
 class ConjuredItem(Item):
-    def update_quality_conditions(self) -> list:
+    def update_quality_conditions(self) -> dict:
         return {"delta_quality": -2, "delta_sell_in": -1}
