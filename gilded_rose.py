@@ -1,18 +1,31 @@
 from dataclasses import dataclass, field
 from typing import List
-
+from abc import ABC, abstractmethod
 
 @dataclass
 class GildedRose:
     items: List = field(default_factory=list)
     # special_items = ["Aged Brie", "Sulfuras, Hand of Ragnaros", "Backstage passes", "Conjured"]
+    parsed_items: List = field(default_factory=list, init=False)
+
+    def __post_init__(self):
+        for item in self.items:
+            if item.name.title() == "Aged Brie":
+                self.parsed_items.append(AgedBrie(item.sell_in, item.quality))
+            else:
+                self.parsed_items.append(item)
+            
+        
 
     def update_quality(self):
-        for item in self.items:
+        for item in self.parsed_items:
             # Base case
             item.sell_in -= 1
             delta_quality = -1
             max_quality = 50
+
+            delta_quality, delta_sell_in = item.update_quality_conditions()['delta_quality'], item.update_quality_conditions()['delta_sell_in'] 
+            print(delta_quality, delta_sell_in)
 
             # Sulfuras case
             if item.name.title() == "Sulfuras, Hand Of Ragnaros":
@@ -20,9 +33,9 @@ class GildedRose:
                 delta_quality = 0
                 max_quality = 80
 
-            # Aged Brie case
-            elif item.name.title() == "Aged Brie":
-                delta_quality = 1
+            # # Aged Brie case
+            # elif item.name.title() == "Aged Brie":
+            #     delta_quality = 1
 
             # Backstage pass case
             elif "Backstage passes" in item.name:
@@ -63,3 +76,32 @@ class Item:
 
     def __repr__(self):
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+
+class CustomItemFactory(ABC):
+    @abstractmethod
+    def __init__(self, sell_in, quality):
+        self.name = "Custom Item Name"
+        self.sell_in = sell_in
+        self.quality = quality
+
+    @abstractmethod
+    def update_quality_conditions(self) -> dict:
+        """Should return a dict of a change in quality and change in sell_in"""
+        pass
+
+    @abstractmethod
+    def __repr__(self):
+        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+
+
+class AgedBrie(CustomItemFactory):
+    def __init__(self, sell_in, quality):
+        self.name = "Aged Brie"
+        self.sell_in = sell_in
+        self.quality = quality
+
+    def __repr__(self):
+        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+
+    def update_quality_conditions(self) -> list:
+        return {"delta_quality": 1, "delta_sell_in": -1}
