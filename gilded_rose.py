@@ -11,7 +11,7 @@ class GildedRose:
     def __post_init__(self):
         for item in self.items:
             if item.name.title() == "Aged Brie":
-                self.parsed_items.append(AgedBrie(item.sell_in, item.quality))
+                self.parsed_items.append(AgedBrie(item.name, item.sell_in, item.quality))
             else:
                 self.parsed_items.append(item)
             
@@ -77,31 +77,25 @@ class Item:
     def __repr__(self):
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
 
-class CustomItemFactory(ABC):
-    @abstractmethod
-    def __init__(self, sell_in, quality):
-        self.name = "Custom Item Name"
-        self.sell_in = sell_in
-        self.quality = quality
-
-    @abstractmethod
-    def update_quality_conditions(self) -> dict:
-        """Should return a dict of a change in quality and change in sell_in"""
-        pass
-
-    @abstractmethod
-    def __repr__(self):
-        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
-
-
-class AgedBrie(CustomItemFactory):
-    def __init__(self, sell_in, quality):
-        self.name = "Aged Brie"
-        self.sell_in = sell_in
-        self.quality = quality
-
-    def __repr__(self):
-        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
-
+class AgedBrie(Item):
     def update_quality_conditions(self) -> list:
         return {"delta_quality": 1, "delta_sell_in": -1}
+
+
+# class CustomItemFactory(ABC):
+#     @abstractmethod
+#     def __init__(self, sell_in, quality):
+#         self.name = "Custom Item Name"
+#         self.sell_in = sell_in
+#         self.quality = quality
+
+#     @abstractmethod
+#     def update_quality_conditions(self) -> dict:
+#         """Should return a dict of a change in quality and change in sell_in"""
+#         pass
+
+#     @abstractmethod
+#     def __repr__(self):
+#         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+
+
