@@ -13,12 +13,12 @@ class GildedRose:
             item.name = item.name.title()
             args = [item.name, item.sell_in, item.quality]
 
-            # All special items stored as k/v pair, where key is string identifier and value is class
+            # Special items stored as k/v pair, where k is string identifier and v is class
             special_items = {"Aged Brie": AgedBrie, "Sulfuras - Hand Of Ragnaros": Sulfuras,
                              "Backstage Passes To": BackstagePass, "Conjured": ConjuredItem}
 
             special = False
-            for k in special_items:
+            for k, _ in special_items.items():
                 if item.name == k or k in item.name:
                     self.parsed_items.append(special_items[k](*args))
                     special = True
