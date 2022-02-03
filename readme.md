@@ -1,39 +1,54 @@
-# Gilded rose tech test
+# Gilded Rose Tech Test (Python)
+Second practice exercise of a tech test with the aim of demonstrating OOD and TDD
 
-This is a well known kata developed by [Terry Hughes](http://iamnotmyself.com/2011/02/13/refactor-this-the-gilded-rose-kata/). This is commonly used as a tech test to assess a candidate's ability to read, refactor and extend legacy code.
 
-Here is the text of the kata:
+## Requirements
+- Python 3.8+ (https://www.python.org/downloads/)
+- Pip 22.0.2+ (https://pip.pypa.io/en/stable/installation/)
+- Coverage.py (https://coverage.readthedocs.io/en/6.3/)
+- Modules (part of Python Standard Library): unittest, dataclasses, typing
 
-*"Hi and welcome to team Gilded Rose. As you know, we are a small inn with a prime location in a prominent city run by a friendly innkeeper named Allison. We also buy and sell only the finest goods. Unfortunately, our goods are constantly degrading in quality as they approach their sell by date. We have a system in place that updates our inventory for us. It was developed by a no-nonsense type named Leeroy, who has moved on to new adventures. Your task is to add the new feature to our system so that we can begin selling a new category of items. First an introduction to our system:
 
-All items have a `SellIn` value which denotes the number of days we have to sell the item. All items have a Quality value which denotes how valuable the item is. At the end of each day our system lowers both values for every item. Pretty simple, right? Well this is where it gets interesting:
+# Approach
+- Crux of refactor involves using the Item class as a base class. Each Item is parsed and either returns a RegularItem or one of many special item subclasses that inherit from the Item base class
+  - Each Item subclass has an update_quality_conditions method that returns a dict with the keys corresponding to the appropriate change in quality and sell_in (if any)
+- Used a dataclass for easier init and post_init control for GildedRose class
+  - *May switch to attrs library*
+- Created an instance variable called parsed_items that is created post_init of the GildedRose class. This iterates through the items list and appends respective subclasses of Item to it
+  - Called .title() to normalize item names to bypass exact string matching
+  - Space complexity could be decreased by overriding initial items array instead
+- Update_quality method now simply fetches and executes the quality and sell_in for each item
+  - Min/max functions serve as the check to ensure vals are within quality restrictions
 
-- Once the sell by date has passed, Quality degrades twice as fast
-- The Quality of an item is never negative
-- “Aged Brie” actually increases in Quality the older it gets
-- The Quality of an item is never more than 50
-- “Sulfuras”, being a legendary item, never has to be sold or decreases in Quality
-- “Backstage passes”, like aged brie, increases in Quality as it’s `SellIn` value approaches; Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but Quality drops to 0 after the concert
+**POST-REVIEW CHANGES**
+- TBA
 
-We have recently signed a supplier of conjured items. This requires an update to our system:
+## Running tests (from root)
+- Run "coverage run -m test_gilded_rose.py"
+- To check coverage: "coverage report"
 
-* “Conjured” items degrade in Quality twice as fast as normal items
 
-Feel free to make any changes to the `UpdateQuality` method and add any new code as long as everything still works correctly. However, do not alter the Item class or Items property as those belong to the goblin in the corner who will insta-rage and one-shot you as he doesn’t believe in shared code ownership (you can make the `UpdateQuality` method and Items property static if you like, we’ll cover for you)."*
+## Running code (from root)
+- Run "python main.py"
+- You should see:
+```
+name | sell_in | quality
+[(Aged Brie, 3, 11), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 14, 1), (Foo, 14, 9), (Conjured Foo, 14, 8)]
+[(Aged Brie, 2, 12), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 13, 2), (Foo, 13, 8), (Conjured Foo, 13, 6)]
+[(Aged Brie, 1, 13), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 12, 3), (Foo, 12, 7), (Conjured Foo, 12, 4)]
+[(Aged Brie, 0, 14), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 11, 4), (Foo, 11, 6), (Conjured Foo, 11, 2)]
+[(Aged Brie, -1, 16), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 10, 5), (Foo, 10, 5), (Conjured Foo, 10, 
+0)]
+[(Aged Brie, -2, 18), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 9, 7), (Foo, 9, 4), (Conjured Foo, 9, 0)]
+[(Aged Brie, -3, 20), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 8, 9), (Foo, 8, 3), (Conjured Foo, 8, 0)]
+[(Aged Brie, -4, 22), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 7, 11), (Foo, 7, 2), (Conjured Foo, 7, 0)]
+[(Aged Brie, -5, 24), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 6, 13), (Foo, 6, 1), (Conjured Foo, 6, 0)]
+[(Aged Brie, -6, 26), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 5, 15), (Foo, 5, 0), (Conjured Foo, 5, 0)]
+[(Aged Brie, -7, 28), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 4, 18), (Foo, 4, 0), (Conjured Foo, 4, 0)]
+[(Aged Brie, -8, 30), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 3, 21), (Foo, 3, 0), (Conjured Foo, 3, 0)]
+[(Aged Brie, -9, 32), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 2, 24), (Foo, 2, 0), (Conjured Foo, 2, 0)]
+[(Aged Brie, -10, 34), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 1, 27), (Foo, 1, 0), (Conjured Foo, 1, 0)]
+[(Aged Brie, -11, 36), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, 0, 30), (Foo, 0, 0), (Conjured Foo, 0, 0)]
+[(Aged Brie, -12, 38), (Sulfuras - Hand Of Ragnaros, 12345, 50), (Backstage Passes To A Random Concert, -1, 0), (Foo, -1, 0), (Conjured Foo, -1, 0)]
+```
 
-From the original desc: *Just for clarification, an item can never have its Quality increase above 50, however "Sulfuras" is a
-legendary item and as such its Quality is 80 and it never alters.*  
-
-## The brief:
-
-Choose [legacy code](https://github.com/emilybache/GildedRose-Refactoring-Kata) (translated by Emily Bache) in the language of your choice. The aim is to practice good design in the language of your choice. Refactor the code in such a way that adding the new "conjured" functionality is easy.
-
-You don't need to clone the repo if you don't want to. Feel free to copy [the ruby code](https://github.com/emilybache/GildedRose-Refactoring-Kata/blob/main/ruby/gilded_rose.rb) into a new folder and write your tests from scratch.
-
-HINT: Test first FTW!
-
-## Self-assessment
-
-Once you have completed the challenge and feel happy with your solution, here's a form to help you reflect on the quality of your code:
-https://docs.google.com/forms/d/e/1FAIpQLSdi4pNXpobmSpdw8T0dml4m6NrQ71IdEzwO5hA9v9_ZzmW7MA/viewform
-# gilded_rose
