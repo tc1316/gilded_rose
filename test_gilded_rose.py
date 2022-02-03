@@ -7,7 +7,7 @@ class GildedRoseTest(unittest.TestCase):
     def setUp(self):
         foo_item = Item("foo", 5, 10)
         aged_brie = Item("Aged Brie", 5, 0)
-        sulfuras = Item("Sulfuras, Hand of Ragnaros", -500, 50)
+        sulfuras = Item("Sulfuras - Hand of Ragnaros", -500, 50)
         bsp = Item("Backstage passes to a TAFKAL80ETC concert", 15, 0)
         conjured_foo_item = Item("Conjured foo", 5, 50)
 

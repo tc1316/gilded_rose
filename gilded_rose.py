@@ -9,26 +9,27 @@ class GildedRose:
 
     def __post_init__(self):
         for item in self.items:
+            # Calling .title() to normalize names
             item.name = item.name.title()
-            if item.name == "Aged Brie":
-                self.parsed_items.append(
-                    AgedBrie(item.name, item.sell_in, item.quality))
-            elif item.name == "Sulfuras, Hand Of Ragnaros":
-                self.parsed_items.append(
-                    Sulfuras(item.name, item.sell_in, item.quality))
-            elif "Backstage Passes To" in item.name:
-                self.parsed_items.append(BackstagePass(
-                    item.name, item.sell_in, item.quality))
-            elif "Conjured" in item.name:
-                self.parsed_items.append(ConjuredItem(
-                    item.name, item.sell_in, item.quality))
-            else:
-                self.parsed_items.append(RegularItem(
-                    item.name, item.sell_in, item.quality))
+            args = [item.name, item.sell_in, item.quality]
+
+            # All special items stored as k/v pair, where key is string identifier and value is class
+            special_items = {"Aged Brie": AgedBrie, "Sulfuras - Hand Of Ragnaros": Sulfuras,
+                             "Backstage Passes To": BackstagePass, "Conjured": ConjuredItem}
+
+            special = False
+            for k in special_items:
+                if item.name == k or k in item.name:
+                    self.parsed_items.append(special_items[k](*args))
+                    special = True
+
+            if not special:
+                self.parsed_items.append(RegularItem(*args))
 
     def update_quality(self):
         max_quality = 50
         min_quality = 0
+
         for item in self.parsed_items:
 
             # Establish deltas
@@ -51,7 +52,7 @@ class GildedRose:
             self.update_quality()
 
 
-# Base Item class left untouched
+# Base Item class instantiation left untouched
 class Item:
     def __init__(self, name, sell_in, quality):
         self.name = name
@@ -59,7 +60,10 @@ class Item:
         self.quality = quality
 
     def __repr__(self):
-        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+        # Edited below to use f string and brackets when outputting; functionality unchanged
+        return f"({self.name}, {self.sell_in}, {self.quality})"
+
+# Generic, non-special item
 
 
 class RegularItem(Item):
