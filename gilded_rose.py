@@ -9,18 +9,16 @@ class GildedRose:
 
     def __post_init__(self):
         for item in self.items:
-            # Calling .title() to normalize names
             item.name = item.name.title()
             args = [item.name, item.sell_in, item.quality]
 
-            # Special items stored as k/v pair, where k is string identifier and v is class
             special_items = {"Aged Brie": AgedBrie, "Sulfuras - Hand Of Ragnaros": Sulfuras,
                              "Backstage Passes To": BackstagePass, "Conjured": ConjuredItem}
 
             special = False
-            for k, _ in special_items.items():
+            for k, class_name in special_items.items():
                 if item.name == k or k in item.name:
-                    self.parsed_items.append(special_items[k](*args))
+                    self.parsed_items.append(class_name(*args))
                     special = True
 
             if not special:
@@ -31,18 +29,15 @@ class GildedRose:
         min_quality = 0
 
         for item in self.parsed_items:
-
-            # Establish deltas
             delta_quality = item.update_quality_conditions()['delta_quality']
             delta_sell_in = item.update_quality_conditions()['delta_sell_in']
 
             item.sell_in += delta_sell_in
 
-            if item.quality >= 0:
-                if item.sell_in < 0:
-                    item.quality += delta_quality * 2
-                else:
-                    item.quality += delta_quality
+            if item.sell_in < 0:
+                item.quality += delta_quality * 2
+            else:
+                item.quality += delta_quality
 
             item.quality = max(min_quality, item.quality)
             item.quality = min(max_quality, item.quality)
