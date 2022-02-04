@@ -1,11 +1,22 @@
 from dataclasses import dataclass, field
 from typing import List
 
+# Base Item class instantiation left untouched
+class Item:
+    def __init__(self, name, sell_in, quality):
+        self.name = name
+        self.sell_in = sell_in
+        self.quality = quality
+
+    def __repr__(self):
+        # Edited below to use f string and brackets when outputting; functionality unchanged
+        return f"({self.name}, {self.sell_in}, {self.quality})"
+
 
 @dataclass
 class GildedRose:
-    items: List = field(default_factory=list)
-    parsed_items: List = field(default_factory=list, init=False)
+    items: List[Item] = field(default_factory=list)
+    _parsed_items: List = field(default_factory=list, init=False)
 
     def __post_init__(self):
         special_items = {"Aged Brie": AgedBrie, "Sulfuras - Hand Of Ragnaros": Sulfuras,
@@ -18,17 +29,17 @@ class GildedRose:
             special = False
             for k, class_name in special_items.items():
                 if item.name == k or k in item.name:
-                    self.parsed_items.append(class_name(*args))
+                    self._parsed_items.append(class_name(*args))
                     special = True
 
             if not special:
-                self.parsed_items.append(RegularItem(*args))
+                self._parsed_items.append(RegularItem(*args))
 
     def update_quality(self):
         max_quality = 50
         min_quality = 0
 
-        for item in self.parsed_items:
+        for item in self._parsed_items:
             delta_quality = item.update_quality_conditions()['delta_quality']
             delta_sell_in = item.update_quality_conditions()['delta_sell_in']
 
@@ -46,21 +57,11 @@ class GildedRose:
         for _ in range(num):
             self.update_quality()
 
-
-# Base Item class instantiation left untouched
-class Item:
-    def __init__(self, name, sell_in, quality):
-        self.name = name
-        self.sell_in = sell_in
-        self.quality = quality
-
     def __repr__(self):
-        # Edited below to use f string and brackets when outputting; functionality unchanged
-        return f"({self.name}, {self.sell_in}, {self.quality})"
+        return f"{self._parsed_items}"
+
 
 # Generic, non-special item
-
-
 class RegularItem(Item):
     def update_quality_conditions(self) -> dict:
         return {"delta_quality": -1, "delta_sell_in": -1}

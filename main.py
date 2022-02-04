@@ -14,7 +14,7 @@ def main():
     print("name | sell_in | quality")
     for _ in range(16):
         gilded_rose.update_quality()
-        print(gilded_rose.parsed_items)
+        print(gilded_rose)
 
 
 if __name__ == "__main__":
