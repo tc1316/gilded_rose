@@ -1,3 +1,4 @@
+from cmath import inf
 from dataclasses import dataclass, field
 from typing import List
 
@@ -40,9 +41,8 @@ class GildedRose:
         min_quality = 0
 
         for item in self._parsed_items:
-            delta_quality = item.update_quality_conditions()['delta_quality']
-            delta_sell_in = item.update_quality_conditions()['delta_sell_in']
-
+            delta_quality, delta_sell_in = item.update_quality_conditions()
+            
             item.sell_in += delta_sell_in
 
             if item.sell_in < 0:
@@ -63,19 +63,18 @@ class GildedRose:
 
 # Generic, non-special item
 class RegularItem(Item):
-    def update_quality_conditions(self) -> dict:
-        return {"delta_quality": -1, "delta_sell_in": -1}
+    def update_quality_conditions(self) -> tuple:
+        return -1,-1
 
 
 class AgedBrie(Item):
     def update_quality_conditions(self) -> dict:
-        return {"delta_quality": 1, "delta_sell_in": -1}
+        return 1,-1
 
 
 class Sulfuras(Item):
     def update_quality_conditions(self) -> dict:
-        return {"delta_quality": 0, "delta_sell_in": 0}
-
+        return 0,0
 
 class BackstagePass(Item):
     def update_quality_conditions(self) -> dict:
@@ -86,12 +85,11 @@ class BackstagePass(Item):
         elif 0 < self.sell_in <= 5:
             delta_quality = 3
         elif self.sell_in <= 0:
-            self.quality = 0
-            delta_quality = 0
+            delta_quality = -inf
 
-        return {"delta_quality": delta_quality, "delta_sell_in": -1}
+        return delta_quality, -1
 
 
 class ConjuredItem(Item):
     def update_quality_conditions(self) -> dict:
-        return {"delta_quality": -2, "delta_sell_in": -1}
+        return -2,-1
