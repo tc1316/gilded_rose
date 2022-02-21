@@ -2,7 +2,7 @@ from cmath import inf
 from dataclasses import dataclass, field
 from typing import List
 
-# Base Item class instantiation left untouched
+
 class Item:
     def __init__(self, name, sell_in, quality):
         self.name = name
@@ -10,7 +10,6 @@ class Item:
         self.quality = quality
 
     def __repr__(self):
-        # Edited below to use f string and brackets when outputting; functionality unchanged
         return f"({self.name}, {self.sell_in}, {self.quality})"
 
 
@@ -42,7 +41,7 @@ class GildedRose:
 
         for item in self._parsed_items:
             delta_quality, delta_sell_in = item.update_quality_conditions()
-            
+
             item.sell_in += delta_sell_in
 
             if item.sell_in < 0:
@@ -64,32 +63,33 @@ class GildedRose:
 # Generic, non-special item
 class RegularItem(Item):
     def update_quality_conditions(self) -> tuple:
-        return -1,-1
+        return -1, -1
 
 
 class AgedBrie(Item):
-    def update_quality_conditions(self) -> dict:
-        return 1,-1
+    def update_quality_conditions(self) -> tuple:
+        return 1, -1
 
 
 class Sulfuras(Item):
-    def update_quality_conditions(self) -> dict:
-        return 0,0
+    def update_quality_conditions(self) -> tuple:
+        return 0, 0
+
 
 class BackstagePass(Item):
-    def update_quality_conditions(self) -> dict:
+    def update_quality_conditions(self) -> tuple:
+        if self.sell_in <= 0:
+            delta_quality = -inf
+        if 0 < self.sell_in <= 5:
+            delta_quality = 3
+        if 5 < self.sell_in <= 10:
+            delta_quality = 2
         if self.sell_in > 10:
             delta_quality = 1
-        elif 5 < self.sell_in <= 10:
-            delta_quality = 2
-        elif 0 < self.sell_in <= 5:
-            delta_quality = 3
-        elif self.sell_in <= 0:
-            delta_quality = -inf
 
         return delta_quality, -1
 
 
 class ConjuredItem(Item):
-    def update_quality_conditions(self) -> dict:
-        return -2,-1
+    def update_quality_conditions(self) -> tuple:
+        return -2, -1
