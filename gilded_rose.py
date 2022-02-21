@@ -12,7 +12,6 @@ class Item:
     def __repr__(self):
         return f"({self.name}, {self.sell_in}, {self.quality})"
 
-
 @dataclass
 class GildedRose:
     items: List[Item] = field(default_factory=list)
